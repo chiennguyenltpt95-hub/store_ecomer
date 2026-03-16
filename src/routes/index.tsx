@@ -1,21 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from '../components/layout/Header';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
-import Home from '../pages/Home';
-import Products from '../pages/Products';
-import ProductDetail from '../pages/Products/ProductDetail';
-import Cart from '../pages/Cart';
-import Checkout from '../pages/Checkout';
+import Header from '../components/layout/Header';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
+import Cart from '../pages/Cart';
+import Checkout from '../pages/Checkout';
+import Home from '../pages/Home';
 import NotFound from '../pages/NotFound';
+import Products from '../pages/Products';
+import ProductDetail from '../pages/Products/ProductDetail';
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <div className="flex flex-col w-full min-h-screen">
         <Header />
-        <main className="flex-1">
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
