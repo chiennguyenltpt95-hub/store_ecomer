@@ -62,7 +62,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="text-center w-70% flex flex-col items-center gap-4">
+      <div className="text-center flex flex-col items-center gap-4">
         <div className="text-4xl font-bold text-gray-800"> Shop by Category</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3 overflow-x-auto w-full py-2 mx-10  rounded-2xl ">
           {categories.map((category) => (
@@ -78,7 +78,7 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <div className="w-70% flex flex-col items-center gap-4 py-4 rounded-2xl">
+      <div className="flex flex-col items-center gap-4 py-4 rounded-2xl">
         <div className="text-4xl font-bold text-gray-800 mt-3.5">Featured Products</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 overflow-x-auto w-full py-2 mx-16  rounded-2xl ">
           {products.map((product) => (
@@ -115,16 +115,16 @@ const Home = () => {
       </div>
 
       {/* Additional Information */}
-      <div className="w-70% text-center mt-8 mb-12">
+      <div className="w-3/4 text-center mt-8 mb-12">
         <div className="text-4xl font-bold text-gray-800 mt-3.5">Recommended for You</div>
-        <div className="relative mt-4 w-full">
+        <div className="relative mt-4 w-70%">
           <button
             onClick={() => handleScroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-2 shadow hover:bg-amber-100 transition"
           >
             <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <div ref={carouselRef} className="flex gap-4 overflow-x-auto scroll-smooth py-4 px-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div ref={carouselRef} className="w-full flex gap-4 overflow-x-auto scroll-smooth py-4 px-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {recommendedProducts.map((product) => (
               <div
                 key={product.name}
