@@ -122,7 +122,7 @@ const Home = () => {
             onClick={() => handleScroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-2 shadow hover:bg-amber-100 transition"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+            <ChevronLeft className="w-5 h-5 text-gray-600 cursor-pointer" />
           </button>
           <div ref={carouselRef} className="w-full flex gap-4 overflow-x-auto scroll-smooth py-4 px-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {recommendedProducts.map((product) => (
@@ -165,7 +165,7 @@ const Home = () => {
             onClick={() => handleScroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-300 rounded-full p-2 shadow hover:bg-amber-100 transition"
           >
-            <ChevronRight className="w-5 h-5 text-gray-600" />
+            <ChevronRight className="w-5 h-5 text-gray-600 cursor-pointer" />
           </button>
         </div>
       </div>
