@@ -154,13 +154,13 @@ export function Header() {
                 <PercentCircle className="w-3.5 h-3.5" /> Deals
               </Link>
               <Link
-                to="/products"
+                to="/best-sellers"
                 className="px-3 py-2 text-sm text-foreground hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition flex items-center gap-1"
               >
                 <Star className="w-3.5 h-3.5" /> Best Sellers
               </Link>
               <Link
-                to="/cart"
+                to="/track-order"
                 className="px-3 py-2 text-sm text-foreground hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition flex items-center gap-1"
               >
                 <TruckIcon className="w-3.5 h-3.5" /> Track Order
