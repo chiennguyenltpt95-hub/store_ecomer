@@ -1,8 +1,7 @@
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 import { Header } from '../components/layout/Header';
-import Login from '../pages/Auth/Login';
-import Register from '../pages/Auth/Register';
+import  { AuthPage } from '../pages/Auth';
 import  { CartPage } from '../pages/Cart';
 import { CategoryPage } from '../pages/Category';
 import { PaymentPage } from '../pages/Checkout';
@@ -38,8 +37,8 @@ const AppRoutes = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/track-order" element={<TrackOrderPage />} />
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/auth" element={<AuthPage />} />
+
       </Routes>
     </BrowserRouter>
   );
