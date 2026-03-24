@@ -4,8 +4,10 @@ import {
   Footprints,
   Headphones,
   Heart,
+  History,
   Home,
   Laptop,
+  LogOut,
   Menu,
   Package,
   PercentCircle,
@@ -17,8 +19,6 @@ import {
   Star,
   TruckIcon,
   User,
-  History,
-  LogOut,
   Watch,
   X
 } from 'lucide-react';
