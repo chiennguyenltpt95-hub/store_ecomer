@@ -10,17 +10,48 @@ import {
   Package,
   PercentCircle,
   Search,
+  Settings,
   Shirt,
   ShoppingCart,
   Sparkles,
   Star,
   TruckIcon,
   User,
+  History,
+  LogOut,
   Watch,
   X
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { clearAuthTokens, getAccessToken, http } from '../../services/http';
+
+type HeaderUser = {
+  full_name?: string;
+  name?: string;
+  email?: string;
+};
+
+function extractCurrentUser(data: unknown): HeaderUser | null {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  const record = data as Record<string, unknown>;
+  if ('email' in record || 'full_name' in record || 'name' in record) {
+    return record as HeaderUser;
+  }
+
+  if ('data' in record && record.data && typeof record.data === 'object') {
+    return record.data as HeaderUser;
+  }
+
+  if ('user' in record && record.user && typeof record.user === 'object') {
+    return record.user as HeaderUser;
+  }
+
+  return null;
+}
 
 const categories = [
   { name: 'Electronics', slug: 'electronics', icon: Laptop, subcategories: ['Phones & Tablets', 'Laptops', 'Cameras', 'Audio', 'Accessories'] },
@@ -73,20 +104,65 @@ const cartItems = [
 ];
 
 export function Header() {
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
+  const [headerUser, setHeaderUser] = useState<HeaderUser | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const megaMenuTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (searchOpen && searchRef.current) {
       searchRef.current.focus();
     }
   }, [searchOpen]);
+
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      setHeaderUser(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadUser = async () => {
+      try {
+        const response = await http.get('/v1/users/me');
+        const user = extractCurrentUser(response.data);
+        if (!cancelled) {
+          setHeaderUser(user);
+        }
+      } catch {
+        if (!cancelled) {
+          setHeaderUser(null);
+        }
+      }
+    };
+
+    void loadUser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const onClickOutside = (event: MouseEvent) => {
+      if (!userMenuRef.current) return;
+      if (userMenuRef.current.contains(event.target as Node)) return;
+      setUserMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
 
   const handleMegaMenuEnter = () => {
     if (megaMenuTimeoutRef.current) clearTimeout(megaMenuTimeoutRef.current);
@@ -98,6 +174,13 @@ export function Header() {
       setMegaMenuOpen(false);
       setActiveCategory(null);
     }, 200);
+  };
+
+  const handleLogout = () => {
+    clearAuthTokens();
+    setHeaderUser(null);
+    setUserMenuOpen(false);
+    navigate('/auth');
   };
 
   return (
@@ -253,9 +336,52 @@ export function Header() {
               </div>
 
               {/* User */}
-              <Link to="/login" className="p-2.5 hover:bg-slate-100 rounded-lg transition">
-                <User className="w-5 h-5" />
-              </Link>
+              {headerUser ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setUserMenuOpen((prev) => !prev)}
+                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 hover:bg-slate-100 rounded-lg transition cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div className="hidden sm:block leading-tight max-w-[160px] text-left">
+                      <p className="text-xs text-foreground truncate">{headerUser.full_name || headerUser.name || 'User'}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">{headerUser.email || 'Signed in'}</p>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-muted-foreground transition ${userMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {userMenuOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-border z-50 overflow-hidden">
+                      <Link
+                        to="/track-order"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-slate-50 transition"
+                      >
+                        <History className="w-4 h-4" /> History
+                      </Link>
+                      <Link
+                        to="/auth"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2.5 text-sm text-foreground hover:bg-slate-50 transition"
+                      >
+                        <Settings className="w-4 h-4" /> Settings
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 transition cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4" /> Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link to="/auth" className="p-2.5 hover:bg-slate-100 rounded-lg transition">
+                  <User className="w-5 h-5" />
+                </Link>
+              )}
             </div>
           </div>
         </div>
